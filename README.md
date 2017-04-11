@@ -6,7 +6,7 @@ or the database system being read-only.
 
 As an example `mysql-test.c` binds to an IPv4 address
 and is written for traditional MySQL setups using
-asyncronuous replication.
+asynchronous replication.
 
 `galera-test.c` is written for MySQL Galera, listens
 and queries via IPv6, and tests its target for being
