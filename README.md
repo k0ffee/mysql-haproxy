@@ -27,7 +27,8 @@ listen api-ro
     server   db-1  db-1:3306 backup
 ```
 
-Here all connections are pointed to db-3, if that one
-doesn't return HTTP status "200 OK", goes to db-2, again
-tests if that one returns "200 OK", and as a matter of last
-resort, turns to db-1, regardless of its HTTP status.
+Here all connections are pointed to host `db-3`, if that one
+doesn't return HTTP status "200 OK", points all new
+connections to host `db-2`, again tests if that one returns
+"200 OK", and if not, as a matter of last resort, turns to
+database host `db-1`, regardless of its HTTP status.
