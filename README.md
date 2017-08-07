@@ -32,3 +32,11 @@ doesn't return HTTP status "200 OK", points all new
 connections to host `db-2`, again tests if that one returns
 "200 OK", and if not, as a matter of last resort, turns to
 database host `db-1`, regardless of its HTTP status.
+
+# Offsets
+
+Useful command while using offsets, they might be different in MySQL versions:
+
+```
+mysql -e 'show slave status' | tr '\t' '\n' | awk '{print NR-1, $1}' | less
+```
