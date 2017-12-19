@@ -35,7 +35,7 @@ database host `db-1`, regardless of its HTTP status.
 
 # Offsets
 
-Useful command while using offsets, they might be different in MySQL versions:
+Useful command when using offsets, they might be different in MySQL versions:
 
 ```
 mysql -e 'show slave status' | tr '\t' '\n' | awk '{print NR-1, $1}' | less
