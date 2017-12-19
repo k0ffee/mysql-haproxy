@@ -19,7 +19,7 @@ Example HAproxy configuration snippet:
 
 ```
 listen api-ro
-    bind     0.0.0.0:3307 
+    bind     0.0.0.0:3307
     balance  first # use first healthy node in list
     default-server port 8306 inter 1s downinter 5s fall 20 rise 20 slowstart 20s
     server   db-3  db-3:3306 check

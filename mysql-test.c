@@ -99,9 +99,9 @@ int main(int argc, char *argv[]) {
             status = 503;
             fprintf(stderr, "503 in mysql_query\n");
         }
-  
+
         MYSQL_RES *result = mysql_store_result(conn_m);
-  
+
         if (result == NULL) {
             status = 503;
             fprintf(stderr, "503 in mysql_store_result\n");
@@ -208,7 +208,7 @@ int main(int argc, char *argv[]) {
 
         status = DEFAULT_HTTP_CODE;  /* resetting status for next round */
 
-        close(conn_s); 
+        close(conn_s);
     }
     return 0;
 }

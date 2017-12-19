@@ -88,14 +88,14 @@ int main(int argc, char *argv[]) {
         if (mysql_real_connect(conn_m, MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD,
             NULL, 0, NULL, 0) == NULL) {
             status = 503;
-        }  
+        }
 
         if (mysql_query(conn_m, QUERY_WSREP_STATE)) {
             status = 503;
         }
-  
+
         MYSQL_RES *result = mysql_store_result(conn_m);
-  
+
         if (result == NULL) {
             status = 503;
         }
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
 
             MYSQL_ROW row;
 
-            while ((row = mysql_fetch_row(result))) { 
+            while ((row = mysql_fetch_row(result))) {
                 if (strcmp(GOOD_GALERA_STATUS, row[1]) == 0) {
                     status = 200;
                 } else {
@@ -121,17 +121,17 @@ int main(int argc, char *argv[]) {
              */
 
             if (status == 200) {
-                
+
                 if (mysql_query(conn_m, QUERY_READ_ONLY)) {
                     status = 503;
                 }
-            
+
                 MYSQL_RES *result = mysql_store_result(conn_m);
-            
+
                 if (result == NULL) {
                     status = 503;
                 }
-            
+
                 while ((row = mysql_fetch_row(result))) {
                     if (strcmp(READ_ONLY_STATUS, row[1]) == 0) {
                         status = 200;
