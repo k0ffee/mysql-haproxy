@@ -13,38 +13,28 @@
 #include <my_global.h>      /* MySQL client headers */
 #include <mysql.h>
 
-#define PORT                8306  /* TCP listening port */
-#define LISTENQ             128   /* TCP Backlog for listen() */
-#define BUFSIZE             128   /* character buffer */
-#define DEFAULT_HTTP_CODE   502   /* default to bad HTTP status code */
-#define GOOD_IO_RUNNING     "Yes" /* I/O thread */
-#define GOOD_SQL_RUNNING    "Yes" /* SQL thread */
-#define GOOD_SECONDS_BEHIND 4     /* maximum acceptable lag behind master */
-
-#define MYSQL_HOST          "10.4.1.43"
-#define MYSQL_USER          "haproxy"
-#define MYSQL_PASSWORD      ""
-#define QUERY               "show slave status"
+#include "config.h"
 
 int main(int argc, char *argv[]) {
     int       list_s;                            /* listening socket */
     int       conn_s;                            /* connection socket */
-    struct    sockaddr_in servaddr;              /* socket address structure */
+    struct    sockaddr_in6 servaddr;             /* socket address structure */
     const int reuseaddr    = 1;                  /* socket options */
     const int port         = PORT;               /* port number */
     int       status       = DEFAULT_HTTP_CODE;  /* HTTP status code */
     const int PROTOCOL_TCP = MYSQL_PROTOCOL_TCP; /* use TCP/IP */
 
-    if ((list_s = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((list_s = socket(AF_INET6, SOCK_STREAM, 0)) < 0) {
         fprintf(stderr, "Error creating listening socket: %d\n", errno);
         exit(EXIT_FAILURE);
     }
 
-    bzero(&servaddr, sizeof(servaddr));
+    memset(&servaddr, 0, sizeof(servaddr));
 
-    servaddr.sin_family      = AF_INET;
-    servaddr.sin_addr.s_addr = inet_addr(MYSQL_HOST);
-    servaddr.sin_port        = htons(port);
+    servaddr.sin6_family = AF_INET6;
+    servaddr.sin6_port   = htons(port);
+
+    inet_pton(servaddr.sin6_family, MYSQL_HOST, &(servaddr.sin6_addr));
 
     if (setsockopt(list_s, SOL_SOCKET, SO_REUSEADDR,
         (const void *) &reuseaddr, sizeof(int)) < 0) {

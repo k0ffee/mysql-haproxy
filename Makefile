@@ -1,13 +1,17 @@
 #
 # This uses bmake.
 #
-NAME = mysql-test
-CC   = clang
-OS  != uname
+
+CC  = clang
+OS != uname
+
 UMASK = 77
+
 .if ${OS}   == Darwin
     GROUP = _www
-    CFLAGS += -I/opt/pkg/include/mysql -L/opt/pkg/lib
+    # CFLAGS += -I/opt/pkg/include/mysql -L/opt/pkg/lib      # pkgsrc
+    CFLAGS += -I/usr/local/Cellar/mysql/5.7.21/include/mysql # homebrew
+    CFLAGS += -L/usr/local/Cellar/mysql/5.7.21/lib           # homebrew
 .elif ${OS} == FreeBSD
     GROUP = www
     CFLAGS += -I/usr/local/include/mysql -L/usr/local/lib/mysql
@@ -17,13 +21,34 @@ UMASK = 77
     CFLAGS += -I/usr/include/mysql -L/usr/lib/x86_64-linux-gnu
 .endif
 
-all: build test
+LIBS = -lmysqlclient
 
-build:
-	umask ${UMASK}
-	${CC} ${CFLAGS} -lmysqlclient -o ${NAME} ${NAME}.c
-	chmod 600 ${NAME}.c
-	chmod 710 ${NAME}
-	chgrp ${GROUP} ${NAME}
+.PHONY: all mysql galera
 
-test:
+all: mysql-test
+
+mysql: mysql-test
+
+mysql-test: mysql-test.c
+	umask ${UMASK} && ${CC} ${CFLAGS} ${LIBS} -D__MYSQL__ -o $@ $<
+	chmod 600 $<
+	chmod 710 $@
+	chgrp ${GROUP} $@
+
+galera: galera-test
+
+galera-test: galera-test.c
+	umask ${UMASK} && ${CC} ${CFLAGS} ${LIBS} -D__GALERA__ -o $@ $<
+	chmod 600 $<
+	chmod 710 $@
+	chgrp ${GROUP} $@
+
+.PHONY: clean clean-mysql clean-galera
+
+clean: clean-mysql clean-galera
+
+clean-mysql:
+	rm -f mysql-test
+
+clean-galera:
+	rm -f galera-test

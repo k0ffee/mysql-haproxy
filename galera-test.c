@@ -11,21 +11,9 @@
 #include <my_global.h>     /* MySQL client headers */
 #include <mysql.h>
 
-#define PORT                8306  /* TCP listening port */
-#define LISTENQ             1024  /* TCP Backlog for listen() */
-#define BUFSIZE             1024  /* character buffer */
-#define GOOD_GALERA_STATUS  "4"   /* wsrep_local_state */
-#define READ_ONLY_STATUS    "OFF"
-#define DEFAULT_HTTP_CODE   502   /* default to bad HTTP status code */
+#include "config.h"
 
-#define MYSQL_HOST          "localhost"
-#define MYSQL_USER          "haproxy"
-#define MYSQL_PASSWORD      ""
-#define QUERY_WSREP_STATE   "show global status where " \
-                            "variable_name='wsrep_local_state'"
-#define QUERY_READ_ONLY     "show global variables like 'read_only'"
-
-int main(int argc, char *argv[]) {
+int main(void) {
     int       list_s;                            /* listening socket */
     int       conn_s;                            /* connection socket */
     struct    sockaddr_in6 servaddr;             /* socket address structure */
@@ -40,6 +28,7 @@ int main(int argc, char *argv[]) {
     }
 
     memset(&servaddr, 0, sizeof(servaddr));
+
     servaddr.sin6_family = AF_INET6;
     servaddr.sin6_addr   = in6addr_any;
     servaddr.sin6_port   = htons(port);
@@ -165,7 +154,7 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        write(conn_s, message, strlen(message));
+        send(conn_s, message, strlen(message), MSG_NOSIGNAL);
 
         status = DEFAULT_HTTP_CODE;  /* resetting status for next round */
 
