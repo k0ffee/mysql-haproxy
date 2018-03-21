@@ -15,7 +15,7 @@
 
 #include "config.h"
 
-int main(int argc, char *argv[]) {
+int main(void) {
     int       list_s;                            /* listening socket */
     int       conn_s;                            /* connection socket */
     struct    sockaddr_in6 servaddr;             /* socket address structure */
